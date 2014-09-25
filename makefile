@@ -1,36 +1,46 @@
-countries=great-britain-latest.osm.pbf france-latest.osm.pbf
-#countries=monaco-latest.osm.pbf liechtenstein-latest.osm.pbf
+#countries=great-britain-latest.osm.pbf france-latest.osm.pbf
+#countries=great-britain-latest.osm.pbf
+countries=monaco-latest.osm.pbf liechtenstein-latest.osm.pbf
 osmosiscmd=osmosis/package/bin/osmosis
-domerge=yes #has to be defined if there is more than one country
-
+mem=-Xmx8000M
 dependencies: mkgmapbuild splitterbuild osmosisbuild osmconvert osmupdate
 
 osmosisreadcountries=$(patsubst %.osm.pbf, --read-pbf file=%.osm.pbf, $(countries))
 
 gmapsupp.img : $(countries) output/splitter
-	mkdir -p temp && cd temp && \
-	java -Xmx2000m -jar ../mkgmap/dist/mkgmap.jar ../output/sorteddata.osm.pbf --gmapsupp --style-file=styles --style=default
-	cp temp/gmapsupp.img ./
+	@echo compiling...
+	@mkdir -p temp && cd temp && \
+		java $(mem) -jar ../mkgmap/dist/mkgmap.jar ../output/sorteddata.osm.pbf --gmapsupp --style-file=styles --style=default 2>&1 >compile.runlog
+	@cp temp/gmapsupp.img ./
+	@rm -rf temp osmupdate_temp output
 
 output/splitter : $(countries) output/sorteddata.osm.pbf
-	mkdir -p temp && cd temp && \
-	java -Xmx2000m -jar ../splitter/dist/splitter.jar ../output/sorteddata.osm.pbf --output-dir=../output/splitter
+	@echo splitting...
+	@mkdir -p temp && cd temp && \
+		java $(mem) -jar ../splitter/dist/splitter.jar ../output/sorteddata.osm.pbf --output-dir=../output/splitter 2>&1 >split.runlog
 
 output/sorteddata.osm.pbf : $(countries) output/mergeddata.osm.pbf
-	$(osmosiscmd) --read-pbf file=output/mergeddata.osm.pbf --sort --write-pbf file=output/sorteddata.osm.pbf
+	@echo sorting...
+	@$(osmosiscmd) --read-pbf file=output/mergeddata.osm.pbf --sort --write-pbf file=output/sorteddata.osm.pbf>sort.runlog
 
 output/mergeddata.osm.pbf : output $(countries)
-ifdef domerge
-	$(osmosiscmd) $(osmosisreadcountries) --merge --write-pbf output/mergeddata.osm.pbf
+ifneq (,$(word 2,$(countries)))
+	@echo merging...
+	@$(osmosiscmd) $(osmosisreadcountries) --merge --write-pbf output/mergeddata.osm.pbf
 else
-	cp $(osmosisreadcountries) output/mergeddata.osm.pbf
+	@echo no need to merge - copying country to output
+	@cp $(osmosisreadcountries) output/mergeddata.osm.pbf
 endif
 
 %.osm.pbf.md5: output always
-	curl download.geofabrik.de/europe/$@>$@
+	@echo refreshing md5 for $*...
+	@curl download.geofabrik.de/europe/$@>$@ 2>downloadmd5-$*.runlog
 
 %.osm.pbf : %.osm.pbf.md5
-	md5sum -c $< || curl download.geofabrik.de/europe/$@>$@
+	@md5sum -c $<  || \
+		(test `find $@ -mtime -30` && \
+			(echo updating $@ && ./osmupdate $@ $*.updated.osm && echo converting && ./osmconvert $*.updated.osm --out-pbf>$@ && rm $*.updated.osm) || \
+			(echo redownloading $@ && curl download.geofabrik.de/europe/$@>$@) )
 
 mkgmap:
 	svn co http://svn.mkgmap.org.uk/mkgmap/trunk mkgmap>downloadmkgmap.log
