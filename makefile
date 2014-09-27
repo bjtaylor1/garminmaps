@@ -1,6 +1,6 @@
-#countries=great-britain-latest.osm.pbf france-latest.osm.pbf
+countries=great-britain-latest.osm.pbf france-latest.osm.pbf
 #countries=great-britain-latest.osm.pbf
-countries=monaco-latest.osm.pbf liechtenstein-latest.osm.pbf
+#countries=monaco-latest.osm.pbf liechtenstein-latest.osm.pbf
 osmosiscmd=osmosis/package/bin/osmosis
 mem=-Xmx8000M
 dependencies: mkgmapbuild splitterbuild osmosisbuild osmconvert osmupdate
@@ -8,20 +8,15 @@ dependencies: mkgmapbuild splitterbuild osmosisbuild osmconvert osmupdate
 osmosisreadcountries=$(patsubst %.osm.pbf, --read-pbf file=%.osm.pbf, $(countries))
 
 gmapsupp.img : $(countries) output/splitter
-	@echo compiling...
-	@mkdir -p temp && cd temp && \
-		java $(mem) -jar ../mkgmap/dist/mkgmap.jar ../output/sorteddata.osm.pbf --gmapsupp --style-file=styles --style=default 2>&1 >compile.runlog
-	@cp temp/gmapsupp.img ./
-	@rm -rf temp osmupdate_temp output
+	./compile.sh
 
 output/splitter : $(countries) output/sorteddata.osm.pbf
-	@echo splitting...
-	@mkdir -p temp && cd temp && \
-		java $(mem) -jar ../splitter/dist/splitter.jar ../output/sorteddata.osm.pbf --output-dir=../output/splitter 2>&1 >split.runlog
+	./split.sh
 
 output/sorteddata.osm.pbf : $(countries) output/mergeddata.osm.pbf
 	@echo sorting...
 	@$(osmosiscmd) --read-pbf file=output/mergeddata.osm.pbf --sort --write-pbf file=output/sorteddata.osm.pbf>sort.runlog
+	@rm -rf output/mergeddata.osm.pbf
 
 output/mergeddata.osm.pbf : output $(countries)
 ifneq (,$(word 2,$(countries)))
