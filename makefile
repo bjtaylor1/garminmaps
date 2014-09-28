@@ -7,6 +7,9 @@ dependencies: mkgmapbuild splitterbuild osmosisbuild osmconvert osmupdate
 
 osmosisreadcountries=$(patsubst %.osm.pbf, --read-pbf file=%.osm.pbf, $(countries))
 
+clean : 
+	rm -rf temp osmupdate_temp output
+
 gmapsupp.img : $(countries) output/splitter
 	./compile.sh
 
