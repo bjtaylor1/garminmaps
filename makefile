@@ -11,7 +11,7 @@ clean :
 	rm -rf temp osmupdate_temp output
 
 gmapsupp.img : $(countries) output/splitter
-	./compile.sh
+	./compile.sh ../output/splitter/*.osm.pbf
 
 output/splitter : $(countries) output/sorteddata.osm.pbf
 	./split.sh
