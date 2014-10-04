@@ -88,8 +88,11 @@ leisure=track & area!=yes
 {add highway=footway; name '${ref} ${name}' | '${ref}' | '${name}' }
 
 #delete shite cycle paths:
-highway=bridleway | highway=path | highway=track | highway=unsurfaced | highway=cycleway | highway=footway
+(highway=bridleway | highway=path | highway=track | highway=unsurfaced | highway=cycleway | highway=footway) & surface!=paved & surface!=asphalt
 {delete highway}
+
+#mark service roads as such
+highway=service & name!=* {set name='Service Road'}
 
 # Roundabouts
 junction=roundabout & (highway=trunk | highway=trunk_link) [0x0c road_class=3 road_speed=2 resolution 18]
