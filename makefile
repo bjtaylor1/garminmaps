@@ -10,7 +10,6 @@ gmapsupp.img : $(countries) output/splitter
 
 dependencies: mkgmapbuild splitterbuild osmosisbuild osmconvert osmupdate
 
-
 clean : 
 	rm -rf temp osmupdate_temp output *.runlog *6324*.img osmmap.img osmmap.tdb
 
