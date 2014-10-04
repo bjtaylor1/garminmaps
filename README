@@ -1,0 +1,19 @@
+Known prerequisites:
+git default-jre ant subversion
+
+Ubuntu: run 'sudo apt-get install <prerequisites>'
+Redhat: run 'sudo yum install <prerequisites>'
+
+Edit makefile, change space-separated list of countries to what you want in your maps.
+(Use monaco and/or liechtenstein to test, as they are tiny and it won't take long.)
+
+Leave style as 'clean', or to use your own style:
+	Make a copy of styles/default or styles/clean as styles/<yourstyle>
+		(note '<yourstyle>' is a directory)
+	Edit the files in the style according to preference (see mkgmap docs online)
+	Change 'style=clean' in the makefile to 'style=<yourstyle>'
+
+Run 'make dependencies' and 'make gmapsupp.img', and optionally, 'make clean'.
+
+Copy gmapsupp.img to the Garmin folder of your device.
+
