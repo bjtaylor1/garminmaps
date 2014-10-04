@@ -63,16 +63,8 @@ highway=secondary | highway=tertiary {name '${ref|highway-symbol:oval} ${name}' 
 highway=* {name '${name}' | '${ref}' }
 
 # Flag unpaved roads.
-highway=*
- (surface=cobblestone | surface=compacted | surface=dirt |
-   surface=earth | surface=grass | surface=grass_paver |
-   surface=gravel | surface=grit | surface=ground | surface=mud |
-   surface=pebblestone | surface=sand | surface=unpaved |
-   mtb:scale=* |
-   tracktype ~ 'grade[2-6]' |
-   smoothness ~ '.*(bad|horrible|impassable)' |
-   sac_scale ~ '.*(mountain|alpine)_hiking' |
-   sport=via_ferrata)
+highway=* & 
+ (surface=cobblestone | surface=compacted | surface=dirt | surface=earth | surface=grass | surface=grass_paver |  surface=gravel | surface=grit | surface=ground | surface=mud | surface=pebblestone | surface=sand | surface=unpaved | mtb:scale=* | tracktype ~ 'grade[2-6]' | smoothness ~ '.*(bad|horrible|impassable)' | sac_scale ~ '.*(mountain|alpine)_hiking' |  sport=via_ferrata)
 { add mkgmap:unpaved=1 }
 (highway=bridleway | highway=path | highway=track | highway=unsurfaced)
 & surface!=* & tracktype!=* & smoothness!=* & sac_scale!=*
@@ -96,8 +88,7 @@ leisure=track & area!=yes
 {add highway=footway; name '${ref} ${name}' | '${ref}' | '${name}' }
 
 #delete shite cycle paths:
-(highway=bridleway | highway=path | highway=track | highway=unsurfaced | highway=cycleway | highway=footway) &
-(surface!=asphalt & surface!=paved)
+highway=bridleway | highway=path | highway=track | highway=unsurfaced | highway=cycleway | highway=footway
 {delete highway}
 
 # Roundabouts
@@ -118,7 +109,6 @@ junction=roundabout [0x0c road_class=0 road_speed=1 resolution 22]
 highway=* & construction=* & maxspeed!=* { add mkgmap:road-speed = '-1' }
 # Lower the road speed of disused ways.
 highway=* & disused=yes & maxspeed!=* { add mkgmap:road-speed = '-2' }
-
 
 
 # Ways sorted roughly by descending order of class
