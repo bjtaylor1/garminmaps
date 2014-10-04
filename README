@@ -6,6 +6,7 @@ Redhat: run 'sudo yum install <prerequisites>'
 
 Edit makefile, change space-separated list of countries to what you want in your maps.
 (Use monaco and/or liechtenstein to test, as they are tiny and it won't take long.)
+They have to be as listed on http://download.geofabrik.de/europe.html.
 
 Leave style as 'clean', or to use your own style:
 	Make a copy of styles/default or styles/clean as styles/<yourstyle>
