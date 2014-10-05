@@ -1,6 +1,6 @@
-#countries=great-britain-latest.osm.pbf france-latest.osm.pbf
+countries=great-britain-latest.osm.pbf france-latest.osm.pbf
 #countries=great-britain-latest.osm.pbf
-countries=monaco-latest.osm.pbf liechtenstein-latest.osm.pbf
+#countries=monaco-latest.osm.pbf liechtenstein-latest.osm.pbf
 
 osmosisreadcountries=$(patsubst %.osm.pbf, --read-pbf file=%.osm.pbf, $(countries))
 
