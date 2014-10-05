@@ -6,7 +6,7 @@ osmosisreadcountries=$(patsubst %.osm.pbf, --read-pbf file=%.osm.pbf, $(countrie
 
 gmapsupp.img : $(countries) output/splitter
 	@echo step 4 of 4 - compiling...
-	@java -Xmx4000M -jar mkgmap/dist/mkgmap.jar --gmapsupp --style-file=styles --style=clean output/splitter/*.osm.pbf >compile.runlog 2>&1
+	@java -Xmx4000M -jar mkgmap/dist/mkgmap.jar --gmapsupp --route --style-file=styles --style=clean output/splitter/*.osm.pbf >compile.runlog 2>&1
 
 dependencies: mkgmapbuild splitterbuild osmosisbuild osmconvert osmupdate
 
