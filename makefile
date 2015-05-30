@@ -1,4 +1,4 @@
-countries=great-britain-latest.osm.pbf france-latest.osm.pbf
+countries=france-latest.osm.pbf great-britain-latest.osm.pbf
 #countries=great-britain-latest.osm.pbf
 #countries=monaco-latest.osm.pbf liechtenstein-latest.osm.pbf
 
