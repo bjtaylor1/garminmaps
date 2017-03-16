@@ -32,7 +32,7 @@ highway=motorway|highway=motorway_link { add oneway=yes }
 # Set highway names to include the reference if there is one
 highway=motorway { name '${ref|highway-symbol:hbox} ${name}' | '${ref|highway-symbol:hbox}' | '${name}' }
 
-(highway=motorway_link | highway=trunk_link) & mkgmap:exit_hint=true & mkgmap:dest_hint=true
+(highway=motorway_link | highway=trunk_link) & mkgmap:exit_hint=true & mkgmap:dest_hint=*
   { name '${destination:ref|subst: =>} ${destination|subst:;=> |subst:/=> }' | 
          '${ref|subst: =>} ${destination|subst:;=> |subst:/=> }' | 
          '${destination|subst:;=> |subst:/=> }' |
@@ -43,7 +43,7 @@ highway=motorway { name '${ref|highway-symbol:hbox} ${name}' | '${ref|highway-sy
          'Exit ${mkgmap:exit_hint_ref}'
        }
 
-(highway=motorway_link | highway=trunk_link) & mkgmap:exit_hint!=* & mkgmap:dest_hint=true
+(highway=motorway_link | highway=trunk_link) & mkgmap:exit_hint!=* & mkgmap:dest_hint=*
   { name '${destination:ref|subst: =>} ${destination|subst:;=> |subst:/=> }' |
          '${ref|subst: =>} ${destination|subst:;=> |subst:/=> }' | 
          '${destination|subst:;=> |subst:/=> }'
@@ -95,7 +95,7 @@ leisure=track & area!=yes
 highway=service & name!=* {set name='Service Road'}
 
 #treat de-facto motorways/ dual carriageways as motorways (covers french 110kmh motorways and uk motorways/DCs which are 70mph=112kmh)
-maxspeed=* & maxspeedkmh()>=110 {set highway=motorway}
+maxspeed=* & maxspeedkmh()>=110 & railway!=* {set highway=motorway}
 
 # Roundabouts
 junction=roundabout & (highway=trunk | highway=trunk_link) [0x0c road_class=3 road_speed=2 resolution 18]
@@ -120,12 +120,12 @@ highway=* & disused=yes & maxspeed!=* { add mkgmap:road-speed = '-2' }
 # Ways sorted roughly by descending order of class
 highway=motorway & network=e-road [0x01 resolution 14 continue]
 highway=motorway  [0x01 resolution 15] # no road_class or road_speed - not routable
-highway=motorway_link & (mkgmap:exit_hint=true | mkgmap:dest_hint=true) [0x06 resolution 20]
+highway=motorway_link & (mkgmap:exit_hint=true | mkgmap:dest_hint=*) [0x06 resolution 20]
 highway=motorway_link [0x09 resolution 20]
 
 highway=trunk & ( network=e-road | int_ref=* ) [0x02 resolution 15 continue]
 highway=trunk [0x02 road_class=3 road_speed=2 resolution 18]
-highway=trunk_link & (mkgmap:exit_hint=true | mkgmap:dest_hint=true) [0x06 road_class=3 road_speed=2 resolution 20]
+highway=trunk_link & (mkgmap:exit_hint=true | mkgmap:dest_hint=*) [0x06 road_class=3 road_speed=2 resolution 20]
 highway=trunk_link [0x09 road_class=3 road_speed=2 resolution 20]
 highway=* & highway!=proposed & motorroad=yes [0x02 road_class=3 road_speed=2 resolution 18]
 highway=primary & ( network=e-road | int_ref=* ) [0x03 resolution 17 continue]
@@ -168,7 +168,7 @@ natural=coastline [0x15 resolution 12]
 
 #railway=abandoned [0x0a road_class=3 road_speed=2 resolution 22]
 #railway=platform [0x16 road_class=3 road_speed=2 resolution 23]
-railway=* & !(tunnel=yes) [0x14 resolution 22]
+railway=* & !(tunnel=yes) [0x14 resolution 16]
 
 #(man_made=cable|(man_made=* & man_made ~ '.*pipe.*')) & area!=yes &
 #tunnel!=yes & location != underground
