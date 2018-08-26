@@ -7,9 +7,9 @@ dependencies: mkgmapbuild splitterbuild osmconvert osmupdate
 clean : 
 	rm -rf temp osmupdate_temp output *.runlog *6324*.img osmmap.img osmmap.tdb
 
-output/splitter : $(countries) output/sorteddata.osm.pbf
+output/splitter : output/sorteddata.osm.pbf
 	@echo step 3 of 4 - splitting...
-	@./split.sh
+	./split.sh
 
 output/sorteddata.osm.pbf : $(countries) output/mergeddata.osm.pbf
 	@echo step 2 of 4 - sorting...
