@@ -35,7 +35,7 @@ endif
 	curl download.geofabrik.de/europe/$@>$@
 
 %.osm.pbf : %.osm.pbf.md5
-	@md5sum -c $<  || ./refreshsourcedata.sh $*
+	@md5sum -c $<  || ./refreshsourcedata.sh $@
 
 mkgmap:
 	svn co http://svn.mkgmap.org.uk/mkgmap/trunk mkgmap
