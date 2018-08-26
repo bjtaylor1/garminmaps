@@ -2,7 +2,7 @@ gmapsupp.img : $(countries) output/splitter
 	@echo step 4 of 4 - compiling...
 	java -Xmx4000M -jar mkgmap/dist/mkgmap.jar --gmapsupp --route --style-file=styles --style=clean output/splitter/*.osm.pbf
 
-dependencies: mkgmapbuild splitterbuild osmosisbuild osmconvert osmupdate
+dependencies: mkgmapbuild splitterbuild osmconvert osmupdate
 
 clean : 
 	rm -rf temp osmupdate_temp output *.runlog *6324*.img osmmap.img osmmap.tdb
@@ -28,10 +28,10 @@ osmosis:
 	git clone https://github.com/openstreetmap/osmosis osmosis
 
 osmconvert:
-	wget -O - http://m.m.i24.cc/osmconvert.c | cc -x c - -lz -O3 -o osmconvert
+	cc -x c - -lz -O3 -o osmconvert osmconvert.c
 
 osmupdate:
-	wget -O - http://m.m.i24.cc/osmupdate.c | cc -x c - -o osmupdate
+	cc -x c -o osmupdate osmupdate.c
 
 mkgmapbuild: mkgmap always
 	cd mkgmap && svn update && ant
