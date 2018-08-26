@@ -1,5 +1,6 @@
 countries=europe-latest.osm.pbf
 
+numcountries=$(words $(countries))
 osmosisreadcountries=$(patsubst %.osm.pbf, --read-pbf file=%.osm.pbf, $(countries))
 
 gmapsupp.img : $(countries) output/splitter
@@ -13,24 +14,24 @@ clean :
 
 output/splitter : $(countries) output/sorteddata.osm.pbf
 	@echo step 3 of 4 - splitting...
-	@./split.sh >split.runlog
+	@./split.sh
 
 output/sorteddata.osm.pbf : $(countries) output/mergeddata.osm.pbf
 	@echo step 2 of 4 - sorting...
 	osmosis/package/bin/osmosis --read-pbf file=output/mergeddata.osm.pbf --sort --write-pbf file=output/sorteddata.osm.pbf
 
 output/mergeddata.osm.pbf : output $(countries)
-ifneq (,$(word 2,$(countries)))
+ifneq (1, $(numcountries))
 	@echo step 1 of 4 - merging...
-	osmosis/package/bin/osmosis $(osmosisreadcountries) --merge --write-pbf output/mergeddata.osm.pbf
+#	osmosis/package/bin/osmosis $(osmosisreadcountries) --merge --write-pbf output/mergeddata.osm.pbf
 else
-	@echo step 1 of 4 - merging (only one country so no need to merge - copying country straight to output)
-	cp $(osmosisreadcountries) output/mergeddata.osm.pbf
+	@echo "step 1 of 4 - merging (only one country so no need to merge - copying country straight to output)"
+	cp $(countries) output/mergeddata.osm.pbf
 endif
 
 %.osm.pbf.md5: output always
 	@echo refreshing md5 for $*...
-	rm $@
+	rm -f $@
 	curl download.geofabrik.de/europe/$@>$@
 
 %.osm.pbf : %.osm.pbf.md5
