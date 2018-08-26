@@ -1,8 +1,3 @@
-countries=europe-latest.osm.pbf
-
-numcountries=$(words $(countries))
-osmosisreadcountries=$(patsubst %.osm.pbf, --read-pbf file=%.osm.pbf, $(countries))
-
 gmapsupp.img : $(countries) output/splitter
 	@echo step 4 of 4 - compiling...
 	java -Xmx4000M -jar mkgmap/dist/mkgmap.jar --gmapsupp --route --style-file=styles --style=clean output/splitter/*.osm.pbf
@@ -20,22 +15,8 @@ output/sorteddata.osm.pbf : $(countries) output/mergeddata.osm.pbf
 	@echo step 2 of 4 - sorting...
 	osmosis/package/bin/osmosis --read-pbf file=output/mergeddata.osm.pbf --sort --write-pbf file=output/sorteddata.osm.pbf
 
-output/mergeddata.osm.pbf : output $(countries)
-ifneq (1, $(numcountries))
-	@echo step 1 of 4 - merging...
-#	osmosis/package/bin/osmosis $(osmosisreadcountries) --merge --write-pbf output/mergeddata.osm.pbf
-else
-	@echo "step 1 of 4 - merging (only one country so no need to merge - copying country straight to output)"
-	cp $(countries) output/mergeddata.osm.pbf
-endif
-
-%.osm.pbf.md5: output always
-	@echo refreshing md5 for $*...
-	rm -f $@
-	curl download.geofabrik.de/europe/$@>$@
-
-%.osm.pbf : %.osm.pbf.md5
-	@md5sum -c $<  || ./refreshsourcedata.sh $@
+output/mergeddata.osm.pbf : output
+	cp countries.osm.pbf output/mergeddata.osm.pbf
 
 mkgmap:
 	svn co http://svn.mkgmap.org.uk/mkgmap/trunk mkgmap
