@@ -1,4 +1,4 @@
-gmapsupp.img : $(countries) output/splitter
+gmapsupp.img : output/splitter
 	@echo step 4 of 4 - compiling...
 	java -Xmx4000M -jar mkgmap/dist/mkgmap.jar --gmapsupp --route --style-file=styles --style=clean output/splitter/*.osm.pbf
 
@@ -11,11 +11,11 @@ output/splitter : output/sorteddata.osm.pbf
 	@echo step 3 of 4 - splitting...
 	./split.sh
 
-output/sorteddata.osm.pbf : $(countries) output/mergeddata.osm.pbf
+output/sorteddata.osm.pbf: output
 	@echo step 2 of 4 - sorting...
-	osmosis/package/bin/osmosis --read-pbf file=output/mergeddata.osm.pbf --sort --write-pbf file=output/sorteddata.osm.pbf
+	osmosis --read-pbf file=countries.osm.pbf --sort --write-pbf file=output/sorteddata.osm.pbf
 
-output/mergeddata.osm.pbf : output
+output/mergeddata.osm.pbf: output
 	cp countries.osm.pbf output/mergeddata.osm.pbf
 
 mkgmap:
@@ -23,9 +23,6 @@ mkgmap:
 
 splitter:
 	svn co http://svn.mkgmap.org.uk/splitter/trunk splitter
-
-osmosis:
-	git clone https://github.com/openstreetmap/osmosis osmosis
 
 osmconvert:
 	cc -x c - -lz -O3 -o osmconvert osmconvert.c
@@ -38,9 +35,6 @@ mkgmapbuild: mkgmap always
 
 splitterbuild: splitter always
 	cd splitter && svn update && ant
-
-osmosisbuild: osmosis always
-	cd osmosis && git pull && ./gradlew assemble
 
 output :
 	mkdir output
