@@ -91,8 +91,8 @@ leisure=track & area!=yes
 (highway=bridleway | highway=path | highway=track | highway=unsurfaced | highway=cycleway | highway=footway) & surface!=paved & surface!=asphalt
 {delete highway}
 
-#mark service roads as such
-highway=service & name!=* {set name='Service Road'}
+#mark service roads as such #in fact no don't.
+#highway=service & name!=* {set name='Service Road'}
 
 #treat de-facto motorways/ dual carriageways as motorways (covers french 110kmh motorways and uk motorways/DCs which are 70mph=112kmh)
 maxspeed=* & maxspeedkmh()>=110 & railway!=* {set highway=motorway}
