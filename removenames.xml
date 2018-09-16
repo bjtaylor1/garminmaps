@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<translations>
+<translation>
+	<name>Remove names</name>
+	<description>Remove all ref and name tags</description>
+	<match>
+		<tag k="name|operator" v=".*"/>
+	</match>
+	<output>
+		<copy-unmatched/>
+	</output>
+</translation>
+</translations>
