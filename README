@@ -1,4 +1,7 @@
+Download mkgmap to ~/mkgmap prior to running (and build, but which should be fairly painless - it's java)
+
 Known prerequisites:
+
 git default-jre ant subversion
 
 Ubuntu: run 'sudo apt-get install <prerequisites>'
